@@ -31,15 +31,19 @@ public class Calculator implements ActionListener
     // label, strings and color
     private JLabel result_lbl;
     private Color backgroundCol = Color.decode("#616161");
-    private String current_val = "0";
-    private String new_val;
     private double check;
-    private double[] results = new double[3];
-    private String current_result;
-    private double newDoub;
     
-    private boolean div = false, mult = false, add = false, sub = false;
+    // operations and variables
+    private String runningNumber = "";
+    private String leftValStr = "";
+    private String rightValStr = "";
+    private Operation currentOp = Operation.empty;
+    private String result = "";
+    private String new_val;
+    private int k = 0;
+
     
+    // operation enum (add/div/mult/sub)
     public enum Operation {
         div("/"),
         mult("*"),
@@ -57,13 +61,7 @@ public class Calculator implements ActionListener
             return op;
         }
     }
-    
-    private String runningNumber = "";
-    private String leftValStr = "";
-    private String rightValStr = "";
-    private Operation currentOp = Operation.empty;
-    private String result = "";
-    
+
     // constructor
     public Calculator()
     {
@@ -153,7 +151,9 @@ public class Calculator implements ActionListener
         // button 0
         if (e.getSource() == keys[0])
         {
-            runningNumber += "0";
+            if (runningNumber == "" || runningNumber != "0")
+                runningNumber = "0";
+            
             result_lbl.setText(runningNumber);
         }
         
@@ -187,7 +187,6 @@ public class Calculator implements ActionListener
         if (e.getSource() == percent_but)
         {
             // percentage (/100)
-            result_lbl.setText(current_val);
         }
         
         if (e.getSource() == div_but)
@@ -213,10 +212,10 @@ public class Calculator implements ActionListener
     
     public void performFunction(Operation op)
     {
-        
+        // if there is an operation selected
         if (currentOp != Operation.empty)
         {
-            // Run some maths
+            // perform the maths
             // user selected an operator but then selected another operator without selecting a number
             if (runningNumber != "")
             {
@@ -244,21 +243,6 @@ public class Calculator implements ActionListener
             leftValStr = runningNumber;
             runningNumber = "";
             currentOp = op;
-        }
-    }
-    
-    // removes leading zeros from a number
-    public void removeLeadingZeros()
-    {
-        try
-        {
-            Integer newInt = Integer.parseInt(current_val);
-            current_val = newInt.toString();
-        }
-        catch (Exception e)
-        {
-            System.out.println("Calculator Error");
-            System.exit(0);
         }
     }
 }
