@@ -35,6 +35,8 @@ public class Calculator implements ActionListener
     private String new_val;
     private double check;
     private double[] results = new double[3];
+    private String current_result;
+    private double newDoub;
     
     private boolean div = false, mult = false, add = false, sub = false;
     
@@ -210,17 +212,10 @@ public class Calculator implements ActionListener
 
             if (mult)
             {
-                results[2] = results[1] * results[0];
-            }
-            else if (!mult && !add && !sub && !div)
-            {
-                results[2] = results[2] * results[1];
+                current_result = Double.toString(results[1] * results[0]);
             }
             
-            
-            current_val = Double.toString(results[2]);
-            result_lbl.setText(current_val);
-            mult = false;
+            result_lbl.setText(current_result);
         }
         if (e.getSource() == point_but)
         {
