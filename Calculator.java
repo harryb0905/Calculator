@@ -40,6 +40,30 @@ public class Calculator implements ActionListener
     
     private boolean div = false, mult = false, add = false, sub = false;
     
+    public enum Operation {
+        div("/"),
+        mult("*"),
+        sub("-"),
+        add("+"),
+        empty("Empty");
+        
+        private String op;
+        
+        Operation(String op) {
+            this.op = op;
+        }
+        
+        public String op() {
+            return op;
+        }
+    }
+    
+    private String runningNumber = "";
+    private String leftValStr = "";
+    private String rightValStr = "";
+    private Operation currentOp = Operation.empty;
+    private String result = "";
+    
     // constructor
     public Calculator()
     {
@@ -129,9 +153,8 @@ public class Calculator implements ActionListener
         // button 0
         if (e.getSource() == keys[0])
         {
-            if (current_val != "0")
-                current_val += "0";
-            result_lbl.setText(current_val);
+            runningNumber += "0";
+            result_lbl.setText(runningNumber);
         }
         
         // buttons 1-9
@@ -139,88 +162,88 @@ public class Calculator implements ActionListener
         {
             if (e.getSource() == keys[j])
             {
-                current_val += Integer.toString(j);
-                removeLeadingZeros();
-                result_lbl.setText(current_val);
+                runningNumber += Integer.toString(j);
+                result_lbl.setText(runningNumber);
             }
         }
         
         // calculator function keys
         if (e.getSource() == AC_but)
         {
-            current_val = "0";
-            results[0] = 0;
-            results[1] = 0;
-            results[2] = 0;
-            result_lbl.setText(current_val);
+            leftValStr = "";
+            rightValStr = "";
+            result = "0";
+            runningNumber = "0";
+            currentOp = Operation.empty;
+            result_lbl.setText(result);
         }
+        
         if (e.getSource() == plusMinus_but)
         {
             // string to int, convert to -ve if > 0, +ve if < 0
-            if ((check = Double.parseDouble(current_val)) > 0 || ((check = Double.parseDouble(current_val)) < 0))                current_val = Double.toString(-check);
-            result_lbl.setText(current_val);
+            
         }
+        
         if (e.getSource() == percent_but)
         {
             // percentage (/100)
-            if (Double.parseDouble(current_val) != 0)
-            {
-                current_val = Double.toString(Double.parseDouble(current_val) / 100);
-            }
             result_lbl.setText(current_val);
         }
+        
         if (e.getSource() == div_but)
-        {
-            current_val += "1";
-            result_lbl.setText(current_val);
-        }
+            performFunction(Operation.div);
+        
         if (e.getSource() == mult_but)
-        {
-            // multiply
-            if (Double.parseDouble(current_val) / 1 == 0)
-            {
-                results[0] = 0;
-                current_val = Integer.toString(0);
-                result_lbl.setText(Integer.toString(0));
-            }
-            else
-            {
-                results[0] = Double.parseDouble(current_val);
-                result_lbl.setText(current_val);
-                current_val = "";
-            }
-
-            mult = true;
-            add = false;
-            sub = false;
-            div = false;
-        }
+            performFunction(Operation.mult);
+        
         if (e.getSource() == sub_but)
-        {
-            current_val += "1";
-            result_lbl.setText(current_val);
-        }
+            performFunction(Operation.sub);
+        
         if (e.getSource() == add_but)
-        {
-            current_val += "1";
-            result_lbl.setText(current_val);
-        }
+            performFunction(Operation.add);
+        
         if (e.getSource() == equals_but)
-        {
-            // equals
-            results[1] = Double.parseDouble(current_val);
-
-            if (mult)
-            {
-                current_result = Double.toString(results[1] * results[0]);
-            }
-            
-            result_lbl.setText(current_result);
-        }
+            performFunction(currentOp);
+        
         if (e.getSource() == point_but)
         {
-            current_val += "1";
-            result_lbl.setText(current_val);
+            
+        }
+    }
+    
+    public void performFunction(Operation op)
+    {
+        
+        if (currentOp != Operation.empty)
+        {
+            // Run some maths
+            // user selected an operator but then selected another operator without selecting a number
+            if (runningNumber != "")
+            {
+                rightValStr = runningNumber;
+                runningNumber = "";
+                
+                if (currentOp == Operation.mult) {
+                    result = Double.toString(Double.parseDouble(leftValStr) * Double.parseDouble(rightValStr));
+                } else if (currentOp == Operation.div) {
+                    result = Double.toString(Double.parseDouble(leftValStr) / Double.parseDouble(rightValStr));
+                } else if (currentOp == Operation.sub) {
+                    result = Double.toString(Double.parseDouble(leftValStr) - Double.parseDouble(rightValStr));
+                } else if (currentOp == Operation.add) {
+                    result = Double.toString(Double.parseDouble(leftValStr) + Double.parseDouble(rightValStr));
+                }
+                
+                leftValStr = result;
+                result_lbl.setText(result);
+            }
+            
+            currentOp = op;
+            
+        } else {
+            //First time operator has been pressed
+            leftValStr = runningNumber;
+            runningNumber = "";
+            currentOp = op;
         }
     }
     
