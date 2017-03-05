@@ -178,17 +178,16 @@ public class Calculator implements ActionListener
         if (e.getSource() == plusMinus_but)
         {
             // invert sign of runningNumber
-            if ((runningNumber != "0" && runningNumber != "") && (result != "0"))
-            {
+            if ((runningNumber != "0" && runningNumber != ""))
                 runningNumber = Double.toString(0 - Double.parseDouble(runningNumber));
-                
-                if (isInteger(Double.parseDouble(runningNumber)))
-                    runningNumber = Integer.toString((int)(Double.parseDouble(runningNumber)));
-
-                result_lbl.setText(runningNumber);
-                
-                currentOp = Operation.empty;
-            }
+            else
+                runningNumber = Double.toString(0 - Double.parseDouble(result));
+            
+            if (isInteger(Double.parseDouble(runningNumber)))
+                runningNumber = Integer.toString((int)(Double.parseDouble(runningNumber)));
+            
+            result_lbl.setText(runningNumber);
+            currentOp = Operation.empty;
         }
         
         // convert to % (/100)
@@ -213,12 +212,19 @@ public class Calculator implements ActionListener
         // add decimal point
         if (e.getSource() == point_but)
         {
-            if (pointCount < 1)
-                runningNumber = Integer.toString((int)(Double.parseDouble(runningNumber))) + ".";
+            if (runningNumber != "")
+            {
+                if (pointCount < 1)
+                    runningNumber = Integer.toString((int)(Double.parseDouble(runningNumber))) + ".";
+            }
+            else
+            {
+                if (pointCount < 1)
+                    runningNumber = Integer.toString(0) + ".";
+            }
             
             result_lbl.setText(runningNumber);
             pointCount++;
-            currentOp = Operation.empty;
         }
         
         // divide
@@ -333,4 +339,5 @@ public class Calculator implements ActionListener
     {
         return (Math.ceil(value) == Math.floor(value));
     }
+    
 }
