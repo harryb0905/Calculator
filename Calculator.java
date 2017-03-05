@@ -186,20 +186,28 @@ public class Calculator implements ActionListener
                     runningNumber = Integer.toString((int)(Double.parseDouble(runningNumber)));
 
                 result_lbl.setText(runningNumber);
+                
+                currentOp = Operation.empty;
             }
         }
         
         // convert to % (/100)
         if (e.getSource() == percent_but)
         {
-            runningNumber = Double.toString(Double.parseDouble(runningNumber) / 100);
-            
+            if (runningNumber != "")
+                runningNumber = Double.toString(Double.parseDouble(runningNumber) / 100);
+            else
+                runningNumber = Double.toString(Double.parseDouble(result) / 100);
+    
             if (isInteger(Double.parseDouble(runningNumber)))
                 runningNumber = Integer.toString((int)(Double.parseDouble(runningNumber)));
             
             result = runningNumber;
-            
             result_lbl.setText(result);
+            
+            runningNumber = result;
+            
+            currentOp = Operation.empty;
         }
         
         // add decimal point
@@ -210,6 +218,7 @@ public class Calculator implements ActionListener
             
             result_lbl.setText(runningNumber);
             pointCount++;
+            currentOp = Operation.empty;
         }
         
         // divide
@@ -320,15 +329,8 @@ public class Calculator implements ActionListener
     
     
     // check if double is a whole number
-    public boolean isInteger(double value)
+    public static boolean isInteger(double value)
     {
         return (Math.ceil(value) == Math.floor(value));
     }
 }
-
-// doesnt' work for: pressing percent button AND +/- button on new result value on screen
-
-
-
-
-
